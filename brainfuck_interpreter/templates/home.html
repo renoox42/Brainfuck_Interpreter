@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Brainfuck Interpreter</title>
+</head>
+<body>
+    <h1>Brainfuck interpreter</h1>
+    <form method="POST">
+        <textarea name="user_input"
+                  placeholder="Enter your program here."
+                  rows="10"
+                  cols="60">{{ user_input }}</textarea>
+        <br>
+        <h3>Instruction limit:</h3>
+        <input type="number" name="max_instructions" width="50" value={{ max_instructions }}>
+        <br>
+        <h3>Program input:</h3>
+        <input type="text" name="program_input" width="50" value={{ program_input }}>
+        <button>Execute program</button>
+    </form>
+    <hr>
+    <h2>Output:</h2>
+    <p style="color:{{ output_color }}">{{ output }}</p>
+    <hr>
+    <!-- Add example programs -->
+</body>
+</html>
