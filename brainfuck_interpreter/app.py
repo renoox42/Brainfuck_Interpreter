@@ -10,6 +10,7 @@ def home():
     return render_template("home.html", output="Please enter your program above.")
 
 
+# TODO: FIX REST OF STRING NOT SHOWING
 # Called when "Execute program" button is pressed.
 @app.route('/', methods=["POST"])
 def execute_program():
@@ -21,7 +22,7 @@ def execute_program():
         return render_template("home.html", output=f"> Error. No instruction limit given. <",
                                max_instructions=request.form["max_instructions"], user_input=user_input,
                                program_input=request.form["program_input"],
-                               output_color="red")
+                               output_color="#990000")
 
     interpreter = Interpreter()
     interpreter_return_value = interpreter.interpret(edited_input, (int(request.form["max_instructions"])),
@@ -42,6 +43,11 @@ def execute_program():
                            max_instructions=request.form["max_instructions"],
                            user_input=user_input, program_input=request.form["program_input"],
                            output_color=color)
+
+
+@app.route('/', methods=["POST"])
+def save_programs():
+    return "Saved"
 
 
 if __name__ == '__main__':

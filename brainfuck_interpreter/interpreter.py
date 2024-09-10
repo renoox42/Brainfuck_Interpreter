@@ -34,7 +34,7 @@ class Interpreter:
                 Input String read by the interpreter.
         Returns
         -------
-            str, int
+            tuple[str, int]
                 The output string that results from executing the instructions and a corresponding error code.
                 0 -> SUCCESS
                 1 -> ERROR
