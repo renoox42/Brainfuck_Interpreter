@@ -12,6 +12,7 @@ def home():
 
 
 # TODO: FIX REST OF STRING NOT SHOWING
+# TODO: REFACTORING
 # Called when any button is pressed.
 @app.route('/execute_request', methods=["POST"])
 def execute_request():
@@ -20,9 +21,12 @@ def execute_request():
         return save_program()
     # Button for viewing saved programs was pressed
     if request.form["buttons"] == "view":
-        return view_programs()
-
+        return view_programs(request.form["username"].strip(), request.form["user_input"])
     # Button for executing was pressed
+    return execute_program()
+
+
+def execute_program():
     user_input = request.form["user_input"]
     edited_input = (user_input.replace("\n", "")
                     .replace(" ", "").replace("\r", "").strip())
@@ -53,6 +57,7 @@ def execute_request():
                            user_input=user_input, program_input=request.form["program_input"],
                            output_color=color)
 
+
 # Saves entered program to the database
 def save_program():
     name = request.form["username"].strip()
@@ -78,6 +83,7 @@ def save_program():
 
     connection = sqlite3.connect("database.db")
     cursor = connection.cursor()
+
     cursor.execute("INSERT INTO programs (username, program) VALUES (?, ?)",
                    (name, edited_input))
     connection.commit()
@@ -86,25 +92,55 @@ def save_program():
     return render_template("home.html", output=f"> Saved program. <",
                            max_instructions=request.form["max_instructions"],
                            user_input=user_input, program_input=request.form["program_input"],
-                           output_color="black")
+                           output_color="green")
 
 
-def view_programs():
-    name = request.form["username"].strip()
-    user_input = request.form["user_input"]
-
+def view_programs(name, user_input):
     connection = sqlite3.connect("database.db")
     cursor = connection.cursor()
     cursor.row_factory = sqlite3.Row
     programs = cursor.execute("SELECT * FROM programs WHERE username=?", (name,)).fetchall()
+    connection.close()
 
     if len(programs) == 0:
+        if user_input is None:
+            return render_template("home.html", output=f"> Deleted {name}'s saved programs. <", output_color="green")
         return render_template("home.html", output=f"> No data for given username. <",
                                max_instructions=request.form["max_instructions"],
                                user_input=user_input, program_input=request.form["program_input"],
                                output_color="#990000")
 
-    return render_template("saved_programs.html", programs=programs)
+    return render_template("saved_programs.html", programs=programs, name=name)
+
+
+@app.route("/delete_history", methods=["POST"])
+def delete_history():
+    name = request.form["delete"]
+
+    connection = sqlite3.connect("database.db")
+    cursor = connection.cursor()
+    cursor.execute("DELETE FROM programs WHERE username=?", (name,))
+    connection.commit()
+    connection.close()
+    return render_template("home.html", output=f"> Deleted {name}'s saved programs. <", output_color="green")
+
+
+@app.route("/delete_one_program", methods=["POST"])
+def delete_one_program():
+    delete_id = int(request.form["delete_id"])
+
+    connection = sqlite3.connect("database.db")
+    cursor = connection.cursor()
+    cursor.row_factory = sqlite3.Row
+
+    name = (cursor.execute("SELECT * FROM programs WHERE id=? LIMIT 1", (delete_id,)).fetchone())["username"]
+    print(name)
+
+    cursor.execute("DELETE FROM programs WHERE id=?", (delete_id,))
+    connection.commit()
+    connection.close()
+
+    return view_programs(name, None)
 
 
 # Checks if entered program contains only "brainfuck-valid" characters

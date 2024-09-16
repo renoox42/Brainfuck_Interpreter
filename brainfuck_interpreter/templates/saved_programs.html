@@ -6,17 +6,21 @@
     <title>Title</title>
 </head>
 <body style="background-color:#dbdbdb">
-    <h1 class="text-center">PROGRAMS:</h1>
-    {% for p in programs %}
-        <p class="text-center">{{ p["program"] }}</p>
-        <hr>
-    {% endfor %}
+    <h1 class="text-center">{{ name }}'s Programs:</h1>
+    <form class="text-center" action="/delete_one_program" method="POST">
+        {% for p in programs %}
+            <p>{{ p["program"] }}</p>
+            <button class="text-center" name="delete_id" value={{ p["id"] }}>Delete</button>
+            <hr>
+        {% endfor %}
+    </form>
     <div class="text-center">
         <button onclick="history.back()">Back</button>
     </div>
     <br>
     <form action="/delete_history" class="text-center" method="POST">
-        <button>Delete all saved programs</button>
+        <button name="delete" value={{ name }}>Delete all saved programs</button>
     </form>
+    <br>
 </body>
 </html>
