@@ -12,12 +12,15 @@ def home():
 
 
 # TODO: FIX REST OF STRING NOT SHOWING
-# Called when "Execute program" button is pressed.
+# Called when any button is pressed.
 @app.route('/execute_request', methods=["POST"])
 def execute_request():
     # Button for saving was pressed
     if request.form["buttons"] == "save":
         return save_program()
+    # Button for viewing saved programs was pressed
+    if request.form["buttons"] == "view":
+        return view_programs()
 
     # Button for executing was pressed
     user_input = request.form["user_input"]
@@ -50,7 +53,7 @@ def execute_request():
                            user_input=user_input, program_input=request.form["program_input"],
                            output_color=color)
 
-
+# Saves entered program to the database
 def save_program():
     name = request.form["username"].strip()
     user_input = request.form["user_input"]
@@ -78,6 +81,7 @@ def save_program():
     cursor.execute("INSERT INTO programs (username, program) VALUES (?, ?)",
                    (name, edited_input))
     connection.commit()
+    connection.close()
 
     return render_template("home.html", output=f"> Saved program. <",
                            max_instructions=request.form["max_instructions"],
@@ -85,6 +89,25 @@ def save_program():
                            output_color="black")
 
 
+def view_programs():
+    name = request.form["username"].strip()
+    user_input = request.form["user_input"]
+
+    connection = sqlite3.connect("database.db")
+    cursor = connection.cursor()
+    cursor.row_factory = sqlite3.Row
+    programs = cursor.execute("SELECT * FROM programs WHERE username=?", (name,)).fetchall()
+
+    if len(programs) == 0:
+        return render_template("home.html", output=f"> No data for given username. <",
+                               max_instructions=request.form["max_instructions"],
+                               user_input=user_input, program_input=request.form["program_input"],
+                               output_color="#990000")
+
+    return render_template("saved_programs.html", programs=programs)
+
+
+# Checks if entered program contains only "brainfuck-valid" characters
 def valid_chars(program: str):
     for i in range(0, len(program)):
         c = program[i]
