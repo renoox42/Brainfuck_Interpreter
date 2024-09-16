@@ -122,7 +122,7 @@ def delete_history():
     cursor.execute("DELETE FROM programs WHERE username=?", (name,))
     connection.commit()
     connection.close()
-    return render_template("home.html", output=f"> Deleted {name}'s saved programs. <", output_color="green")
+    return render_template("home.html", output=f"> Deleted all of {name}'s saved programs. <", output_color="green")
 
 
 @app.route("/delete_one_program", methods=["POST"])
