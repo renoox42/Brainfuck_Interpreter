@@ -9,19 +9,19 @@
     <h1 class="text-center">Brainfuck Interpreter</h1>
     <form action="/execute_request" class="text-center" method="POST">
         <textarea name="user_input"
-                  placeholder="Enter your program here."
+                  placeholder="Enter your program here"
                   rows="10"
                   cols="60">{{ user_input }}</textarea>
         <br>
         <h4>Instruction limit:</h4>
-        <input type="number" name="max_instructions" width="50" value={{ max_instructions }}>
+        <input type="number" name="max_instructions" placeholder="Limit" width="50" value={{ max_instructions }}>
         <br>
         <h4>Program input:</h4>
-        <input type="text" name="program_input" width="50" value={{ program_input }}>
+        <input type="text" name="program_input" placeholder="Input"  width="50" value={{ program_input }}>
         <button name="buttons" value="execute">Execute program</button>
         <br>
         <h2 class="text-center">Output:</h2>
-        <p class="text-center" style="color:{{ output_color }}"> "{{ output }}" </p>
+        <p class="text-center" style="color:{{ output_color }}"> {{ output }} </p>
         <hr>
         <input type="text" name="username"  placeholder="Enter username">
         <button name="buttons" value="save">Save Program</button>

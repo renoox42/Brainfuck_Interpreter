@@ -8,7 +8,7 @@ app = Flask(__name__)
 # Called when accessing the page.
 @app.route('/')
 def home():
-    return render_template("home.html", output="Please enter your program above.")
+    return render_template("home.html", output="Please enter your program above.", output_color="green")
 
 
 # TODO: FIX REST OF STRING NOT SHOWING
@@ -95,6 +95,7 @@ def save_program():
                            output_color="green")
 
 
+# Shows user his saved programs, if there are any.
 def view_programs(name, user_input):
     connection = sqlite3.connect("database.db")
     cursor = connection.cursor()
@@ -113,6 +114,7 @@ def view_programs(name, user_input):
     return render_template("saved_programs.html", programs=programs, name=name)
 
 
+# Deletes every saved program of user and returns to main page
 @app.route("/delete_history", methods=["POST"])
 def delete_history():
     name = request.form["delete"]
@@ -125,6 +127,7 @@ def delete_history():
     return render_template("home.html", output=f"> Deleted all of {name}'s saved programs. <", output_color="green")
 
 
+# Deletes one specific program in user history
 @app.route("/delete_one_program", methods=["POST"])
 def delete_one_program():
     delete_id = int(request.form["delete_id"])
@@ -134,7 +137,6 @@ def delete_one_program():
     cursor.row_factory = sqlite3.Row
 
     name = (cursor.execute("SELECT * FROM programs WHERE id=? LIMIT 1", (delete_id,)).fetchone())["username"]
-    print(name)
 
     cursor.execute("DELETE FROM programs WHERE id=?", (delete_id,))
     connection.commit()
