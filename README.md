@@ -1,5 +1,5 @@
 <h1>Brainfuck Interpreter Webapp</h1>
-<p>This simple Webapp allows users to enter and execute their programs, save them to a database and manage their saved programs. <br>+
+<p>This simple Webapp allows users to enter and execute their programs, save them to a database and manage their saved programs. <br>
 Its backend uses the Flask web framework.
 </p>
 <h2>What is Brainfuck?</h2>
